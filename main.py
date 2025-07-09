@@ -1,268 +1,244 @@
 import json
 import datetime
 import os
+from collections import defaultdict
 
-print ('مرحباً بك في نظام إدارة نقطة الشحن!')
+print('Welcome to the Charging Point Management System!')
 
-def File_Generator ():
+def File_Generator():
     """
-    description : This function create new json file every day.
+    Creates a new JSON file for each day's data
     """
-    todayS = str (datetime.date.today())
+    todayS = str(datetime.date.today())
     fileName = f'data/clients_{todayS}.json'
     return fileName
 
 def import_data():
     """
-    description : This function import json file data.
+    Imports data from the JSON file
     """
     fileName = File_Generator()
     if not os.path.exists(fileName):
-         with open(fileName, 'w' , encoding='utf-8') as file:
-             json.dump({},file , indent=4 , ensure_ascii=False)
-    with open (fileName,'r' , encoding='utf-8') as file:
-         return json.load(file)
-
-#I'll complete this function ASAP.
-    #Done
+        with open(fileName, 'w', encoding='utf-8') as file:
+            json.dump({}, file, indent=4, ensure_ascii=False)
+    with open(fileName, 'r', encoding='utf-8') as file:
+        return json.load(file)
 
 def save_data(data):
     """
-    description : This function save client's data in json file.
+    Saves client data to JSON file
     """
     fileName = File_Generator()
-    with open(fileName , 'w' , encoding='utf-8') as file:
-        json.dump(data ,file , indent=4 , ensure_ascii=False)
+    with open(fileName, 'w', encoding='utf-8') as file:
+        json.dump(data, file, indent=4, ensure_ascii=False)
 
-
-def Add_New_Client(name , device , price):
+def Add_New_Client(name, device, price):
     """
-    input : name: client's Name
-    select: device
-    output : client's ID , client's Name , devices , total Price
+    Adds a new client with their devices
     """
-    
     while True:
-        print("1.جوال")
-        print("2.بطارية حجم صغير")
-        print("3.بطارية حجم وسط")
-        print("4.بطارية حجم كبير")
-        print("5.لابتوب")
-        print("6.بوربانك")
-        print ('7.إضافة جهاز غير معرَف')
-        selection =   input('الرجاء اختيار رقم الجهاز المراد شحنه: ') 
+        print("\nSelect device type:")
+        print("1. Mobile Phone")
+        print("2. Small Battery")
+        print("3. Medium Battery")
+        print("4. Large Battery")
+        print("5. Laptop")
+        print("6. Power Bank")
+        print("7. Other Device")
+        selection = input("Please select device number to charge: ")
+        
         if selection == '6':
-            device.append("بوربانك")
-            price +=2
+            device.append("Power Bank")
+            price += 2
             break
-
-        elif selection == '1' or selection == '2' or selection == '3' or selection =='4' or selection == '5':
-            
-                    while True:
-                        print("\nهل مرفق شاحن مع الجهاز؟")
-                        print('1.نعم')
-                        print('2.لا')
-                        ans =  input('الرجاء اختيار رقم: ') 
-                        if ans == '1' :
-                            if selection == '1':
-                                device.append("جوال مع شاحن")
-                                price +=1
-
-                            elif selection == '2':
-                                device.append("بطارية حجم صغير مع شاحن")
-                                price +=2
-
-                            elif selection == '5':
-                                while True:
-                                    print ("هل شاحنك 65 واط فأعلى؟")
-                                    print('1.نعم')
-                                    print('2.لا')
-                                    isCharger = input ("الرجاء اختيار رقم: ")
-                                    if isCharger == "1":
-                                        device.append("لابتوب مع شاحن أعلى من 65 واط")
-                                        price +=3
-                                        break
-                                    elif isCharger == '2':
-                                        device.append("لابتوب مع شاحن أقل من 65 واط")
-                                        price +=2
-                                        break
-                                    else:
-                                        print ("ادخال خاطئ! الرجاء اختيار 1 او 2")
-
-                            elif selection == '3':
-                                device.append('بطارية حجم وسط مع شاحن')
-                                price +=3
+        elif selection in ['1', '2', '3', '4', '5']:
+            while True:
+                print("\nIs the charger included?")
+                print("1. Yes")
+                print("2. No")
+                ans = input("Please select: ")
+                
+                if ans == '1':
+                    if selection == '1':
+                        device.append("Mobile Phone with charger")
+                        price += 1
+                    elif selection == '2':
+                        device.append("Small Battery with charger")
+                        price += 2
+                    elif selection == '5':
+                        while True:
+                            print("Is your charger 65W or higher?")
+                            print("1. Yes")
+                            print("2. No")
+                            isCharger = input("Please select: ")
+                            if isCharger == "1":
+                                device.append("Laptop with 65W+ charger")
+                                price += 3
+                                break
+                            elif isCharger == '2':
+                                device.append("Laptop with <65W charger")
+                                price += 2
+                                break
                             else:
-                                device.append("بطارية حجم كبير مع شاحن")
-                                price +=4
-                            break
-                        elif ans == '2':
-                            if selection == '1':
-                                device.append("جوال بدون شاحن")
-                                price +=2
-                            elif selection == '5':
-                                device.append("لابتوب بدون شاحن")
-                                price +=4
-                            elif selection == '2':
-                                device.append("بطارية حجم صغير بدون شاحن")
-                                price +=4
-                            elif selection == '3':
-                                device.append('بطارية حجم متوسط بدون شاحن')
-                                price +=5
-                            else:
-                                device.append("بطارية حجم كبير بدون شاحن")
-                                price +=6
-                            break
-                                
-                        else:
-                            print ('\nادخال خاطئ! الرجاء اختيار رقم الخيار الصحيح')
-
+                                print("Invalid input! Please choose 1 or 2")
+                    elif selection == '3':
+                        device.append('Medium Battery with charger')
+                        price += 3
+                    else:
+                        device.append("Large Battery with charger")
+                        price += 4
                     break
+                elif ans == '2':
+                    if selection == '1':
+                        device.append("Mobile Phone without charger")
+                        price += 2
+                    elif selection == '5':
+                        device.append("Laptop without charger")
+                        price += 4
+                    elif selection == '2':
+                        device.append("Small Battery without charger")
+                        price += 4
+                    elif selection == '3':
+                        device.append('Medium Battery without charger')
+                        price += 5
+                    else:
+                        device.append("Large Battery without charger")
+                        price += 6
+                    break
+                else:
+                    print('\nInvalid input! Please choose the correct option')
+            break
         elif selection == '7':
-            deviceName = input ("أدخل اسم الجهاز المراد شحنه: ")
-            customPrice = int (input ('تكفلة الشحن: '))
+            deviceName = input("Enter device name to charge: ")
+            customPrice = int(input('Charging cost: '))
             device.append(deviceName)
             price += customPrice
             break
-                
         else:
-            print("\nالرجاء ادخال رقم من 1-5!")
+            print("\nPlease enter a number between 1-7!")
 
     while True:
-
-        print("\n1.نعم")
-        print("2.لا")
-        answer = input('هل تريد اضافة جهاز اخر؟ ')
+        print("\n1. Yes")
+        print("2. No")
+        answer = input('Do you want to add another device? ')
         if answer == '1':
-            Add_New_Client(name , device , price)
+            Add_New_Client(name, device, price)
         elif answer == '2':
             clientInfo = {
-                'client name' : name,
-                'devices' : device,
-                'price' : price,
-                'checkout' :False
-                }
-            print (f'\nالاسم: {name}')
-            print ('الأجهزة:', ','.join(device))
-            print (f'تكلفة الشحن: {price} شيكل')
-
+                'client name': name,
+                'devices': device,
+                'price': price,
+                'checkout': False
+            }
+            print(f'\nName: {name}')
+            print('Devices:', ','.join(device))
+            print(f'Charging cost: {price} NIS')
+            
             while True:
-                print("\n1.نعم")
-                print("2.لا")
-                ans = input (f'هل أنت متأكد من اضافة {name} للنظام ؟ ')
+                print("\n1. Yes")
+                print("2. No")
+                ans = input(f'Confirm adding {name} to system? ')
                 if ans == '1':
                     data = import_data()
-                    id = len(data) +1
+                    id = len(data) + 1
                     data[id] = clientInfo
                     save_data(data)
-                    print (f'\nتم اضافة {name} بنجاح!')
-                    print (f"الرقم التسلسلي الخاص بالزبون {name} هو  : {id}")
-                    anyKey = input ("\nاضغط على أي مفتاح للذهاب للواجهة التالية.  ")
+                    print(f'\n{name} added successfully!')
+                    print(f"Client ID for {name}: {id}")
+                    input("\nPress any key to continue...")
                     main()
                 elif ans == "2":
                     main()
-                else:
-                    print ("\nادخال خاطئ الرجاء اختيار ")
-            break
-        else:
-            print ('\nاختر 1 لاضافة جهاز اخر او 2 للذهاب للشاشة القادمة')
 
 def Find_My_Clients():
     data = import_data()
-    id =input ("الرجاء ادخال الرقم التسلسلي الخاص بالزبون: ")
+    id = input("Please enter client ID: ")
 
     if id in data.keys():
-        print ('تم ايجاد الزبون!')
-        clientInfo = list (data[id].values())
-        print (f'\nالاسم: {clientInfo[0]}')
-        print ('الأجهزة:', ','.join(clientInfo[1]))
-        print (f'اجمالي التكلفة: {clientInfo[2]} شيكل')
+        print('Client found!')
+        clientInfo = list(data[id].values())
+        print(f'\nName: {clientInfo[0]}')
+        print('Devices:', ','.join(clientInfo[1]))
+        print(f'Total cost: {clientInfo[2]} NIS')
 
         if clientInfo[-1] == False:
             while True:
-                print ('\n---المحاسبة---')
-                print("\n1.تم التسليم.")
-                print("2.انتقل للشاشة السابقة.")
-                print("3.الرجوع للقائمة الرئيسية.")
-                ans = input ("اختر رقم الخيار :")
+                print('\n---Payment---')
+                print("\n1. Mark as delivered")
+                print("2. Go back")
+                print("3. Return to main menu")
+                ans = input("Select option: ")
                 if ans == '1':
                     fileName = File_Generator()
                     data[id].pop('checkout')
                     data[id]['checkout'] = True
                     save_data(data)
-                    print ('تمت عملية التسليم بنجاح!')
+                    print('Delivery completed successfully!')
                     main()
                 elif ans == '2':
                     Find_My_Clients()
                 elif ans == '3':
                     main()
                 else:
-                    print ("الرجاء اختيار 1 او 2 فقط.")
+                    print("Please choose 1, 2 or 3 only.")
         else:
-            print ('\nتم التسليم بالفعل!')
-            input('أدخل أي رقم للرجوع: ')
+            print('\nAlready delivered!')
+            input('Press any key to return: ')
             main()
     else:
-        print ("USER NOT FOUND! , Please check user ID and try again")
-        input('press any key to go back: ')
+        print("USER NOT FOUND! Please check user ID and try again")
+        input('Press any key to go back: ')
         main()
 
- #Next function : profit Tracker for 'Profit' Section.
-    #Done.
 def profit_Tracker():
     data = import_data()
     totalProfit = 0
     pending = 0
 
-    for value in  list(data.values()):
+    for value in list(data.values()):
         if value['checkout'] == True:
             totalProfit += value['price']
         else:
             pending += value['price']
-        
-    print (f'الربح الكلي = {totalProfit} شيكل')
-    print (f'الربح المعلَق= {pending} شيكل')
-    input('\n أدخل أي رقم للرجوع للقائمة الرئيسية')
+
+    print(f'Total profit = {totalProfit} NIS')
+    print(f'Pending amount = {pending} NIS')
+    input('\n Press any key to return to main menu')
     main()
 
-
 def main():
-    print ("\n1.إضافة زبون جديد")
-    print ("2.البحث عبر الرقم التسلسلي")
-    print ("3.الربح اليومي")
-    print ("4.خروج")
-    
-    choice = input("\nالرجاء كتابة رقم الخيار: ").strip()
+    print("\n1. Add new client")
+    print("2. Search by client ID")
+    print("3. Today's profit")
+    print("4. Exit")
+
+    choice = input("\nPlease enter option number: ").strip()
     if choice == '1':
-        print ('\n---إضافة زبون---')
-        name = input ("الرجاء ادخال اسم الزبون: ").strip()
+        print('\n---Add Client---')
+        name = input("Please enter client name: ").strip()
         device = []
         price = 0
-        Add_New_Client(name, device , price)
-
+        Add_New_Client(name, device, price)
     elif choice == '2':
-        print ('\n---البحث---')
+        print('\n---Search---')
         Find_My_Clients()
-
     elif choice == '3':
-        print ("\n---ربح اليوم---")
+        print("\n---Today's Profit---")
         profit_Tracker()
-
     elif choice == '4':
-        while True:
-            print ("1.نعم")
-            print ("2.لا")
-            ans = input ('هل أنت متأكد؟')
-        
-            if ans == '1':
-                print ("مع السلامة!")
-                quit()
-            elif ans == '2':
-                main()
-            else:
-                print ("ادخال خاطئ!")
+        print("1. Yes")
+        print("2. No")
+        ans = input('Are you sure? ')
+
+        if ans == '1':
+            print("Goodbye!")
+            quit()
+        elif ans == '2':
+            main()
+        else:
+            print("Invalid input!")
     else:
-        print ("ادخال خاطئ!")
+        print("Invalid input!")
         main()
 
 main()
